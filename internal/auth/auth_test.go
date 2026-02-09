@@ -14,7 +14,7 @@ func TestGetAPIKey(t *testing.T) {
 	}{
 		{
 			name:      "Valid ApiKey header",
-			headerVal: "ApiKey abc123",
+			headerVal: "apiKey abc123",
 			wantKey:   "abc123",
 			wantErr:   nil,
 		},
@@ -22,7 +22,7 @@ func TestGetAPIKey(t *testing.T) {
 			name:      "Missing Authorization header",
 			headerVal: "",
 			wantKey:   "",
-			wantErr:   ErrNoAuthHeaderIncluded,
+			wantErr:   ErrNoAuthHeaderInclud,
 		},
 		{
 			name:      "Malformed header (wrong scheme)",
