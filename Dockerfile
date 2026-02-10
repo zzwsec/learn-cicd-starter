@@ -1,7 +1,15 @@
-FROM --platform=linux/amd64 debian:stable-slim
+FROM golang:1.25.1-alpine AS builder
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
 
-RUN apt-get update && apt-get install -y ca-certificates
+ARG TARGETOS
+ARG TARGETARCH
+COPY . .
 
-ADD notely /usr/bin/notely
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
+    go build -o /out/notely .
 
-CMD ["notely"]
+FROM alpine
+COPY --from=builder /out/notely /bin/notely
+ENTRYPOINT ["/bin/notely"]
