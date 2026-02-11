@@ -14,10 +14,18 @@ jobs:
       REPOSITORY: notely-ar-repo
       IMAGE: notely
       TAG: latest
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
 
+      - name: Set up goose
+        uses: mscno/setup-goose@v1
+
+      - name: Migrate database
+        working-directory: ./sql/schema
+        run: goose turso $DATABASE_URL up
+        
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -30,7 +38,3 @@ jobs:
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v3
-
-      - name: Build & push image (Cloud Build)
-        run: |
-          gcloud builds submit --tag "$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$TAG" .
