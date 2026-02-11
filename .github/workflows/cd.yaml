@@ -8,6 +8,12 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    env:
+      LOCATION: asia-northeast1
+      PROJECT_ID: ardent-curve-457502-d9
+      REPOSITORY: notely-ar-repo
+      IMAGE: notely
+      TAG: latest
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -26,11 +32,5 @@ jobs:
         uses: google-github-actions/setup-gcloud@v3
 
       - name: Build & push image (Cloud Build)
-        env:
-          LOCATION: asia-northeast1
-          PROJECT_ID: ardent-curve-457502-d9
-          REPOSITORY: notely-ar-repo
-          IMAGE: notely
-          TAG: v2
         run: |
           gcloud builds submit --tag "$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$TAG" .
